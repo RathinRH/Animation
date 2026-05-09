@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Raajply – Premium Logo Animation</title>
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cinzel:wght@600;700&family=Inter:wght@300;400&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+
+  <!-- Particle canvas (always on top) -->
+  <canvas id="vfx-canvas"></canvas>
+
+  <!-- ══ CRICKET BAT (flies in before impact) ══ -->
+  <div id="bat-wrap">
+    <svg id="bat-svg" viewBox="0 0 120 440" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="blade-g" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%"   stop-color="#b07840"/>
+          <stop offset="35%"  stop-color="#e8c080"/>
+          <stop offset="65%"  stop-color="#d4a060"/>
+          <stop offset="100%" stop-color="#8a5830"/>
+        </linearGradient>
+        <linearGradient id="handle-g" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%"   stop-color="#5a3820"/>
+          <stop offset="50%"  stop-color="#8a6040"/>
+          <stop offset="100%" stop-color="#5a3820"/>
+        </linearGradient>
+        <filter id="bat-shadow">
+          <feDropShadow dx="4" dy="4" stdDeviation="6" flood-color="#000" flood-opacity="0.6"/>
+        </filter>
+        <!-- Wood grain lines on blade -->
+      </defs>
+      <!-- Blade -->
+      <rect x="10" y="100" width="100" height="300" rx="14" ry="14"
+        fill="url(#blade-g)" filter="url(#bat-shadow)"/>
+      <!-- Wood grain lines -->
+      <line x1="30" y1="100" x2="30" y2="400" stroke="#c09050" stroke-width="1" opacity="0.4"/>
+      <line x1="50" y1="100" x2="50" y2="400" stroke="#c09050" stroke-width="1" opacity="0.4"/>
+      <line x1="70" y1="100" x2="70" y2="400" stroke="#c09050" stroke-width="1" opacity="0.4"/>
+      <line x1="90" y1="100" x2="90" y2="400" stroke="#c09050" stroke-width="1" opacity="0.4"/>
+      <!-- Edge ridge -->
+      <rect x="10" y="100" width="8" height="300" rx="4" fill="#d4a060" opacity="0.5"/>
+      <rect x="102" y="100" width="8" height="300" rx="4" fill="#704020" opacity="0.5"/>
+      <!-- RAAJPLY brand text on bat -->
+      <text x="60" y="270" text-anchor="middle" font-family="Cinzel,serif"
+        font-size="11" font-weight="700" fill="#1a2a5e" opacity="0.85"
+        transform="rotate(-90,60,270)">RAAJPLY</text>
+      <!-- Handle grip -->
+      <rect x="40" y="0" width="40" height="110" rx="6" fill="url(#handle-g)" filter="url(#bat-shadow)"/>
+      <!-- Grip tape lines -->
+      <line x1="40" y1="20"  x2="80" y2="20"  stroke="#2a1a0a" stroke-width="3" opacity="0.5"/>
+      <line x1="40" y1="35"  x2="80" y2="35"  stroke="#2a1a0a" stroke-width="3" opacity="0.5"/>
+      <line x1="40" y1="50"  x2="80" y2="50"  stroke="#2a1a0a" stroke-width="3" opacity="0.5"/>
+      <line x1="40" y1="65"  x2="80" y2="65"  stroke="#2a1a0a" stroke-width="3" opacity="0.5"/>
+      <line x1="40" y1="80"  x2="80" y2="80"  stroke="#2a1a0a" stroke-width="3" opacity="0.5"/>
+      <line x1="40" y1="95"  x2="80" y2="95"  stroke="#2a1a0a" stroke-width="3" opacity="0.5"/>
+      <!-- Knob -->
+      <ellipse cx="60" cy="6" rx="22" ry="8" fill="#704030" filter="url(#bat-shadow)"/>
+    </svg>
+    <!-- Motion-blur trail lines -->
+    <div class="trail t1"></div>
+    <div class="trail t2"></div>
+    <div class="trail t3"></div>
+  </div>
+
+  <!-- ══ SHOCKWAVE RINGS ══ -->
+  <div id="shockwave-container"></div>
+
+  <!-- ══ LOGO SVG ══ -->
+  <div id="scene">
+    <svg id="logo-svg" viewBox="0 0 520 630" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <pattern id="woodgrain" x="0" y="0" width="30" height="10" patternUnits="userSpaceOnUse">
+          <rect width="30" height="10" fill="#1a2a5e"/>
+          <path d="M0,3 Q15,1 30,3" stroke="#1e3275" stroke-width="0.7" fill="none" opacity="0.5"/>
+          <path d="M0,7 Q15,5 30,7" stroke="#162050" stroke-width="0.7" fill="none" opacity="0.4"/>
+        </pattern>
+        <clipPath id="tri-clip">
+          <path d="M260,22 L498,422 Q498,440 480,440 L40,440 Q22,440 22,422 Z"/>
+        </clipPath>
+        <linearGradient id="og" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="#ff9020"/>
+          <stop offset="100%" stop-color="#cc4400"/>
+        </linearGradient>
+        <linearGradient id="shine" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#fff" stop-opacity="0"/>
+          <stop offset="50%" stop-color="#fff" stop-opacity="0.32"/>
+          <stop offset="100%" stop-color="#fff" stop-opacity="0"/>
+        </linearGradient>
+        <filter id="fg">
+          <feGaussianBlur stdDeviation="6" result="b"/>
+          <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <filter id="fw">
+          <feGaussianBlur stdDeviation="3" result="b"/>
+          <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <filter id="shadow">
+          <feDropShadow dx="0" dy="12" stdDeviation="22" flood-color="#000" flood-opacity="0.85"/>
+        </filter>
+        <filter id="text-glow">
+          <feGaussianBlur stdDeviation="4" result="b"/>
+          <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+      </defs>
+
+      <!-- ── Triangle fill (wood grain navy) ── -->
+      <path id="tri-fill"
+        d="M260,22 L498,422 Q498,440 480,440 L40,440 Q22,440 22,422 Z"
+        fill="url(#woodgrain)" filter="url(#shadow)" opacity="0"/>
+
+      <!-- ── Triangle orange outline ── -->
+      <path id="tri-outline"
+        d="M260,22 L498,422 Q498,440 480,440 L40,440 Q22,440 22,422 Z"
+        fill="none" stroke="#e87c2b" stroke-width="4"
+        stroke-linejoin="round" filter="url(#fg)" opacity="0"/>
+
+      <!-- Shine sweep -->
+      <rect id="shine-rect" x="-140" y="0" width="280" height="680"
+        fill="url(#shine)" clip-path="url(#tri-clip)"
+        transform="skewX(-15)" opacity="0"/>
+
+      <!-- ── ROYAL CROWN (proper 5-spike shape) ── -->
+      <g id="crown-g" opacity="0">
+        <!-- Crown body -->
+        <path id="crown-path"
+          d="M222,162
+             L226,132
+             L236,150
+             L247,112
+             L260,100
+             L273,112
+             L284,150
+             L294,132
+             L298,162 Z"
+          fill="none" stroke="white" stroke-width="2.5"
+          stroke-linejoin="round" stroke-linecap="round" filter="url(#fw)"/>
+        <!-- Inside arches (3 arcs) -->
+        <path d="M229,162 Q239,150 249,162 Q260,150 271,162 Q281,150 291,162"
+          fill="none" stroke="white" stroke-width="1.8" opacity="0.9"/>
+        <!-- Base bar -->
+        <rect x="222" y="162" width="76" height="9" rx="3"
+          fill="none" stroke="white" stroke-width="2.3"/>
+        <!-- Gem dots at spike tips -->
+        <circle class="gem" cx="247" cy="110" r="4.5" fill="white" opacity="0"/>
+        <circle class="gem" cx="260" cy="98"  r="5.5" fill="white" opacity="0"/>
+        <circle class="gem" cx="273" cy="110" r="4.5" fill="white" opacity="0"/>
+      </g>
+
+      <!-- ── OVAL BADGE (large, thick border like real logo) ── -->
+      <g id="oval-g" opacity="0">
+        <!-- Thick navy border ellipse -->
+        <ellipse cx="260" cy="285" rx="138" ry="70" fill="#1a2a5e"/>
+        <!-- White face -->
+        <ellipse cx="260" cy="285" rx="127" ry="59" fill="white"/>
+      </g>
+
+      <!-- RL label inside oval — sits near top, clear gap above Raaj -->
+      <text id="rl-t" x="260" y="255" text-anchor="middle"
+        font-family="Cinzel,serif" font-size="13" font-weight="700"
+        fill="url(#og)" opacity="0">RL</text>
+
+      <!-- Raaj – large script, dominant, well below RL -->
+      <text id="raaj-t" x="261" y="322" text-anchor="middle"
+        font-family="Great Vibes,cursive" font-size="66"
+        fill="url(#og)" filter="url(#text-glow)" opacity="0">Raaj</text>
+
+      <!-- © outside oval -->
+      <text id="copy-t" x="402" y="262"
+        font-family="Inter,sans-serif" font-size="14" font-weight="400"
+        fill="#1a2a5e" opacity="0">©</text>
+
+      <!-- Ply & Boards -->
+      <text id="ply-t" x="260" y="395" text-anchor="middle"
+        font-family="Cinzel,serif" font-size="24" font-weight="600"
+        fill="white" letter-spacing="1.5" opacity="0">Ply &amp; Boards</text>
+
+      <!-- "Quality is Our Motto" — curved arc OUTSIDE triangle tip -->
+      <path id="arc-path" d="M 148,58 A128,128 0 0,1 372,58" fill="none"/>
+      <text id="motto-t" opacity="0">
+        <textPath href="#arc-path" startOffset="50%" text-anchor="middle"
+          font-family="Inter,sans-serif" font-size="13.5"
+          fill="#cccccc" letter-spacing="1.5">Quality is Our Motto</textPath>
+      </text>
+
+      <!-- ── RAAJPLY WORDMARK ── -->
+      <text id="wordmark" x="260" y="510" text-anchor="middle"
+        font-family="Great Vibes,cursive" font-size="96"
+        fill="none" stroke="url(#og)" stroke-width="1.5"
+        filter="url(#fg)" opacity="0">Raajply</text>
+
+      <!-- Divider line -->
+      <line id="divider" x1="55" y1="528" x2="465" y2="528"
+        stroke="#e87c2b" stroke-width="1.2" stroke-linecap="round"
+        stroke-dasharray="410" stroke-dashoffset="410"/>
+
+      <!-- ISO text -->
+      <text id="iso-t" x="260" y="558" text-anchor="middle"
+        font-family="Inter,sans-serif" font-size="13.5" font-weight="300"
+        fill="#888" letter-spacing="0.8" opacity="0">An ISO 9001-2015 Certified Company</text>
+    </svg>
+  </div>
+
+  <button id="replay-btn" title="Replay">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21.5 2v6h-6"/>
+      <path d="M21.34 15.57a10 10 0 1 1-.92-10.44"/>
+    </svg>
+  </button>
+
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,251 @@
+:root { --navy:#1a2a5e; --orange:#e87c2b; --bg:#060a12; }
+*{margin:0;padding:0;box-sizing:border-box;}
+
+body {
+  background:var(--bg);
+  height:100vh; overflow:hidden;
+  display:flex; justify-content:center; align-items:center;
+}
+body::before {
+  content:'';
+  position:fixed; inset:0;
+  background:radial-gradient(ellipse at 50% 45%, #0f1e44 0%, var(--bg) 72%);
+  z-index:0;
+}
+
+#vfx-canvas {
+  position:fixed; inset:0; z-index:3; pointer-events:none;
+}
+
+/* ── SCENE ── */
+#scene {
+  position:relative; z-index:2;
+  display:flex; justify-content:center; align-items:center;
+  width:100vw; height:100vh;
+}
+#logo-svg {
+  width:min(420px,88vw);
+  height:auto;
+  overflow:visible;
+}
+
+/* ════════════════════════
+   CRICKET BAT
+════════════════════════ */
+#bat-wrap {
+  position:fixed;
+  z-index:10;
+  pointer-events:none;
+  /* Start: off-screen bottom-right, rotated like ready to swing */
+  bottom:-20px;
+  right:-60px;
+  width:120px;
+  transform-origin: 60px 440px;   /* pivot near the knob (top of handle) */
+  transform: rotate(40deg) translateX(200px);
+  opacity:0;
+}
+#bat-svg { width:120px; }
+
+/* Trail lines (motion blur effect) */
+.trail {
+  position:absolute;
+  right:55px;
+  width:3px;
+  border-radius:2px;
+  background:linear-gradient(to bottom, rgba(232,200,100,0.5), transparent);
+  pointer-events:none;
+}
+.t1 { height:280px; top:80px; right:70px; transform:rotate(5deg); opacity:0; }
+.t2 { height:200px; top:100px; right:85px; transform:rotate(10deg); opacity:0; }
+.t3 { height:150px; top:120px; right:100px; transform:rotate(15deg); opacity:0; }
+
+/* BAT ENTRY: slides into view from bottom-right */
+.bat-entry {
+  animation: batEntry 0.5s cubic-bezier(.16,1,.3,1) forwards;
+}
+@keyframes batEntry {
+  to { opacity:1; transform: rotate(40deg) translateX(0); }
+}
+
+/* BAT SWING: rotates counter-clockwise hard and fast */
+.bat-swing {
+  animation: batSwing 0.32s cubic-bezier(.9,0,.6,1.4) forwards;
+}
+@keyframes batSwing {
+  0%   { transform: rotate(40deg) translateX(0); }
+  100% { transform: rotate(-115deg) translateX(0) scale(1.05); }
+}
+
+/* Trail appear during swing */
+.trail-show { animation: trailShow 0.3s ease forwards; }
+@keyframes trailShow {
+  0%   { opacity:0; }
+  40%  { opacity:0.8; }
+  100% { opacity:0; }
+}
+
+/* Bat exits upward after impact */
+.bat-exit {
+  animation: batExit 0.4s ease-in forwards;
+}
+@keyframes batExit {
+  to {
+    transform: rotate(-180deg) translateX(-100px) translateY(-200px);
+    opacity:0;
+  }
+}
+
+/* ════════════════════════
+   SHOCKWAVE RINGS
+════════════════════════ */
+#shockwave-container {
+  position:fixed; inset:0; z-index:4; pointer-events:none;
+}
+.ring {
+  position:absolute;
+  border-radius:50%;
+  border:3px solid var(--orange);
+  transform:translate(-50%,-50%) scale(0);
+  opacity:1;
+  animation: ringExpand 0.8s ease-out forwards;
+}
+.ring.white {
+  border-color:#fff;
+  border-width:6px;
+}
+@keyframes ringExpand {
+  0%   { transform:translate(-50%,-50%) scale(0);    opacity:1; }
+  100% { transform:translate(-50%,-50%) scale(4.5);  opacity:0; }
+}
+
+/* ════════════════════════
+   FLASH
+════════════════════════ */
+#flash-el {
+  position:fixed; inset:0; z-index:20;
+  background:white; opacity:0; pointer-events:none;
+  transition: opacity .06s ease;
+}
+
+/* ════════════════════════
+   LOGO ANIMATIONS
+════════════════════════ */
+
+/* Triangle SLAMS in from three directions */
+#tri-left-side, #tri-right-side, #tri-base { display:none; }
+
+/* Triangle fill – explodes in from center */
+#tri-fill {
+  transform-box: fill-box;
+  transform-origin: center center;
+  transform:scale(0) rotate(-5deg);
+  opacity:0;
+}
+.anim-tri-slam {
+  animation: triSlam .45s cubic-bezier(.34,1.4,.64,1) forwards;
+}
+@keyframes triSlam {
+  0%   { transform:scale(0) rotate(-5deg); opacity:0; }
+  60%  { transform:scale(1.06) rotate(1deg); opacity:1; }
+  100% { transform:scale(1) rotate(0deg); opacity:1; }
+}
+
+/* Triangle outline pulses in */
+#tri-outline { opacity:0; stroke-dasharray:1600; stroke-dashoffset:1600; }
+.anim-outline-draw {
+  animation: outlineDraw 1.8s cubic-bezier(.65,0,.35,1) forwards;
+}
+@keyframes outlineDraw { to { stroke-dashoffset:0; opacity:1; } }
+.anim-outline-out { animation: fadeOut .3s ease forwards; }
+
+/* Shine */
+.anim-shine {
+  animation: shineSweep 1.5s ease forwards;
+}
+@keyframes shineSweep {
+  0%   { transform:skewX(-15deg) translateX(-200px); opacity:1; }
+  100% { transform:skewX(-15deg) translateX(750px);  opacity:0; }
+}
+
+/* Crown flies in from top */
+#crown-g { opacity:0; transform:translateY(-80px); }
+.anim-crown-drop {
+  animation: crownDrop .6s cubic-bezier(.34,1.56,.64,1) forwards;
+}
+@keyframes crownDrop {
+  to { opacity:1; transform:translateY(0); }
+}
+#crown-path { stroke-dasharray:500; stroke-dashoffset:500; }
+.anim-crown-draw { animation: crownDraw 1s ease forwards; }
+@keyframes crownDraw { to { stroke-dashoffset:0; } }
+.anim-gem { animation: gemPop .35s cubic-bezier(.34,1.56,.64,1) forwards; }
+@keyframes gemPop { from{opacity:0;r:0;} to{opacity:1;} }
+
+/* Oval – spins in like a coin toss */
+#oval-g { opacity:0; transform-origin:250px 280px; transform:rotateY(90deg) scale(0.5); }
+.anim-oval {
+  animation: ovalSpin .65s cubic-bezier(.34,1.4,.64,1) forwards;
+}
+@keyframes ovalSpin {
+  0%   { opacity:0; transform:rotateY(90deg) scale(0.5); }
+  100% { opacity:1; transform:rotateY(0deg) scale(1); }
+}
+
+/* Text elements fly in from different sides */
+.fly-left  { opacity:0; transform:translateX(-60px); }
+.fly-right { opacity:0; transform:translateX(60px); }
+.fly-up    { opacity:0; transform:translateY(50px); }
+.fly-down  { opacity:0; transform:translateY(-50px); }
+
+.anim-fly {
+  animation: flyIn .7s cubic-bezier(.16,1,.3,1) forwards;
+}
+@keyframes flyIn { to { opacity:1; transform:translate(0,0); } }
+
+/* Raaj special pop */
+.anim-raaj {
+  animation: raajBounce .9s cubic-bezier(.34,1.56,.64,1) forwards;
+}
+@keyframes raajBounce {
+  0%  { opacity:0; transform:scale(.3) rotate(-8deg); }
+  100%{ opacity:1; transform:scale(1) rotate(0deg); }
+}
+
+/* Wordmark stroke draw → fill */
+#wordmark {
+  stroke-dasharray:3200; stroke-dashoffset:3200;
+}
+.anim-word-draw {
+  animation: wordDraw 2.4s cubic-bezier(.65,0,.35,1) forwards;
+}
+@keyframes wordDraw { to { stroke-dashoffset:0; opacity:1; } }
+.anim-word-fill { animation: wordFill .7s ease forwards; }
+@keyframes wordFill { to { fill:url(#og); stroke-width:0; } }
+
+/* Divider */
+.anim-divider { animation: dividerDraw .9s ease forwards; }
+@keyframes dividerDraw { to { stroke-dashoffset:0; } }
+
+/* Fade in */
+.anim-fade { animation: fadeIn .8s ease forwards; }
+@keyframes fadeIn  { to { opacity:1; } }
+@keyframes fadeOut { to { opacity:0; } }
+
+/* ════════════════════════
+   REPLAY BTN
+════════════════════════ */
+#replay-btn {
+  position:fixed; bottom:32px; right:32px; z-index:99;
+  background:rgba(255,255,255,.07);
+  border:1px solid rgba(255,255,255,.18);
+  color:white; width:50px; height:50px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer; opacity:0; transform:scale(.7);
+  transition:opacity .5s, transform .4s cubic-bezier(.34,1.56,.64,1), background .2s;
+  backdrop-filter:blur(6px);
+}
+#replay-btn.show { opacity:1; transform:scale(1); }
+#replay-btn:hover {
+  background:rgba(232,124,43,.28);
+  transform:scale(1.12) rotate(-30deg);
+}
